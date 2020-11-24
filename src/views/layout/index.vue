@@ -43,15 +43,15 @@ export default {
   top: 0;
   bottom: 0;
 }
-
 .aside {
   background-color: #d3dce6;
+  .aside-menu {
+    height: 100%;
+  }
 }
-
 .header {
   background-color: #b3c0d1;
 }
-
 .main {
   background-color: #e9eef3;
 }
