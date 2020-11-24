@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import request from '@/utils/request'
+import { login } from '@/api/user'
 export default {
   name: 'LoginIndex',
   components: {},
@@ -41,9 +41,10 @@ export default {
     return {
       user: {
         mobile: '', // 手机号
-        code: '' // 验证码
+        code: '', // 验证码
+        agree: false
       },
-      checked: false, // 是否同意协议的选中状态
+      // checked: false, // 是否同意协议的选中状态
       loginLoading: false,
 
       formRules: { // 表单验证规则配置
@@ -99,12 +100,7 @@ export default {
       // 验证通过，提交登录
       // 开启登陆中 loading...
       this.loginLoading = true
-      request({
-        method: 'POST',
-        url: '/mp/v1_0/authorizations',
-        // data 用来设置 POST 请求体
-        data: this.user
-      }).then(res => {
+      login(this.user).then(res => {
         console.log(res)
 
         // 登录成功
