@@ -16,8 +16,8 @@
         <el-form-item prop="code">
           <el-input v-model="user.code" placeholder="请输入验证码"></el-input>
         </el-form-item>
-        <el-form-item prop="agree">
-          <el-checkbox v-model="checked"
+        <el-form-item prop='agree'>
+          <el-checkbox v-model="user.agree"
             >我已阅读并同意用户协议和隐私条款</el-checkbox
           >
         </el-form-item>
@@ -104,9 +104,12 @@ export default {
         console.log(res)
 
         // 登录成功
-        this.$message({
-          message: '登录成功',
-          type: 'success'
+        // this.$message({
+        //   message: '登录成功',
+        //   type: 'success'
+        // })
+        this.$router.push({
+          name: 'home'
         })
         // 关闭 loading
         this.loginLoading = false
