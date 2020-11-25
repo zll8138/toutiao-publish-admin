@@ -49,7 +49,7 @@
       </div>
       <!-- 数据列表 -->
       <el-table
-        :data="tableData"
+        :data="articles"
         stripe
         style="width: 100%"
         class="list-table"
@@ -57,19 +57,29 @@
       >
         <el-table-column
           prop="date"
-          label="日期"
-          width="180">
+          label="封面">
         </el-table-column>
         <el-table-column
-          prop="name"
-          label="姓名"
-          width="180">
+          prop="title"
+          label="标题">
+        </el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态">
+          <template slot-scope="scope">
+            <el-tag :type="articleStatus[scope.row.status].type">{{articleStatus[scope.row.status].text}}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="pubdate"
+          label="发布时间">
         </el-table-column>
         <el-table-column
           prop="address"
-          label="地址">
+          label="操作">
         </el-table-column>
       </el-table>
+
       <!-- /数据列表 -->
 
       <!-- 列表分页 -->
@@ -84,48 +94,38 @@
 </template>
 
 <script>
+import { getArticles } from '@/api/article'
 export default {
   name: 'ArticleIndex',
   components: {},
   props: {},
   data () {
     return {
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
-      },
-      tableData: [{
-        date: '2016-05-02',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1517 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1519 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1516 弄'
-      }]
+      form: {},
+      articles: [],
+      articleStatus: [
+        { status: 0, text: '草稿', type: 'info' }, // 0
+        { status: 1, text: '待审核', type: '' }, // 1
+        { status: 2, text: '审核通过', type: 'success' }, // 2
+        { status: 3, text: '审核失败', type: 'warning' }, // 3
+        { status: 4, text: '已删除', type: 'danger' } // 4
+      ]
     }
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    this.loadArticles()
+  },
   mounted () {},
   methods: {
     onSubmit () {
       console.log('submit!')
+    },
+    loadArticles () {
+      getArticles().then(res => {
+        this.articles = res.data.data.results
+      })
     }
   }
 }
@@ -135,7 +135,6 @@ export default {
 .filter-card {
   margin-bottom: 30px;
 }
-
 .list-table {
   margin-bottom: 20px;
 }
