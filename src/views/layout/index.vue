@@ -2,13 +2,39 @@
   <el-container class="layout-container">
     <el-aside
       class="aside"
-      width="200px"
+      width="auto"
     >
-     <app-aside/>
+     <app-aside
+       class="aside-menu"
+       :is-collapse="isCollapse"
+     />
     </el-aside>
     <el-container>
       <el-header class="header">
-        <app-header/>
+        <div class="header-container">
+          <div>
+            <!-- <app-header/> -->
+            <i
+              :class="{
+                'el-icon-s-fold': isCollapse,
+                'el-icon-s-unfold': !isCollapse
+              }"
+              @click="isCollapse = !isCollapse"
+            ></i>
+            <span>江苏传智播客科技教育有限公司</span>
+          </div>
+          <el-dropdown>
+            <div class="avatar-wrap">
+              <img class="avatar" :src="user.photo" alt="">
+              <span>{{user.name}}</span>
+              <i class="el-icon-arrow-down el-icon--right"></i>
+            </div>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item>设置</el-dropdown-item>
+              <el-dropdown-item>退出</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
+        </div>
       </el-header>
       <el-main class="main">
         <!-- 子路由出口 -->
@@ -20,22 +46,33 @@
 
 <script>
 import AppAside from './components/aside'
-import AppHeader from './components/header'
+import { getUserProfile } from '@/api/user'
+// import AppHeader from './components/header'
 export default {
   name: 'LayoutIndex',
   components: {
-    AppAside,
-    AppHeader
+    AppAside
   },
   props: {},
   data () {
-    return {}
+    return {
+      user: {}, // 当前用户登录信息
+      isCollapse: false
+    }
   },
   computed: {},
   watch: {},
-  created () {},
+  created () {
+    this.loadUserProfile()
+  },
   mounted () {},
-  methods: {}
+  methods: {
+    loadUserProfile () {
+      getUserProfile().then(res => {
+        this.user = res.data.data
+      })
+    }
+  }
 }
 </script>
 
@@ -58,5 +95,23 @@ export default {
 }
 .main {
   background-color: #e9eef3;
+}
+.header-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  .avatar-wrap {
+    display: flex;
+    align-items: center;
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+  }
 }
 </style>
