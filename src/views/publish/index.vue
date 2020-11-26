@@ -9,11 +9,11 @@
         </el-breadcrumb>
         <!-- /面包屑路径导航 -->
       </div>
-      <el-form ref="form" :model="article" label-width="40px">
-        <el-form-item label="标题">
+      <el-form ref="publish-form" :model="article" label-width="60px" :rules="formRules">
+        <el-form-item label="标题" prop="title">
           <el-input v-model="article.title"></el-input>
         </el-form-item>
-        <el-form-item label="内容">
+        <el-form-item label="内容" prop="content">
           <el-tiptap
             v-model="article.content"
             :extensions="extensions"
@@ -29,8 +29,14 @@
             <el-radio :label="0">无图</el-radio>
             <el-radio :label="-1">自动</el-radio>
           </el-radio-group>
+          <template v-if="article.cover.type > 0">
+            <upload-cover
+              :key="cover"
+              v-for="cover in article.cover.type"
+            />
+          </template>
         </el-form-item>
-        <el-form-item label="频道">
+        <el-form-item label="频道" prop="channel_id">
           <el-select v-model="article.channel_id" placeholder="请选择频道">
             <el-option
               :label="channel.name"
@@ -50,6 +56,7 @@
 </template>
 
 <script>
+import UploadCover from './components/upload-cover'
 import { getArticleChannels, addArticle, getArticle, updateArticle } from '@/api/article'
 import {
   ElementTiptap,
@@ -78,7 +85,8 @@ import { uploadImage } from '@/api/image'
 export default {
   name: 'PublishIndex',
   components: {
-    'el-tiptap': ElementTiptap
+    'el-tiptap': ElementTiptap,
+    UploadCover
   },
   props: {},
   data () {
@@ -126,7 +134,32 @@ export default {
         new Preview(),
         new CodeBlock(),
         new TextColor()
-      ]
+      ],
+      formRules: {
+        title: [
+          { required: true, message: '请输入文章标题', trigger: 'blur' },
+          { min: 5, max: 30, message: '长度在 5 到 30 个字符', trigger: 'blur' }
+        ],
+        content: [
+          // { required: true, message: '请输入文章内容', trigger: 'change' }
+          {
+            validator (rule, value, callback) {
+              console.log('content validator')
+              if (value === '<p></p>') {
+                // 验证失败
+                callback(new Error('请输入文章内容'))
+              } else {
+                // 验证通过
+                callback()
+              }
+            }
+          },
+          { required: true, message: '请输入文章内容', trigger: 'blur' }
+        ],
+        channel_id: [
+          { required: true, message: '请选择文章频道' }
+        ]
+      }
     }
   },
   computed: {},
@@ -158,6 +191,16 @@ export default {
       // 封装请求方法
       // 请求提交表单
       // 处理响应结果
+      let isPassed = true
+      this.$refs['publish-form'].validate(valid => {
+        // 验证失败，停止提交表单
+        if (!valid) {
+          isPassed = false
+        }
+      })
+      if (!isPassed) {
+        return
+      }
       const articleId = this.$route.query.id
       if (articleId) {
         // 执行修改操作
