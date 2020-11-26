@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+
 /**
  * 获取素材列表
  */
@@ -7,5 +8,18 @@ export const getImages = params => {
     method: 'GET',
     url: '/mp/v1_0/user/images',
     params
+  })
+}
+
+/**
+ * 收藏素材列表
+ */
+export const collectImage = (imageId, collect) => {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/user/images/${imageId}`,
+    data: {
+      collect
+    }
   })
 }
