@@ -1,40 +1,36 @@
 <template>
-  <el-container class="layout-container">
+   <el-container class="layout-container">
     <el-aside
       class="aside"
       width="auto"
     >
-     <app-aside
-       class="aside-menu"
-       :is-collapse="isCollapse"
-     />
+      <app-aside class="aside-menu" :is-collapse="isCollapse"
+      />
     </el-aside>
     <el-container>
       <el-header class="header">
-        <div class="header-container">
-          <div>
-            <!-- <app-header/> -->
-            <i
-              :class="{
-                'el-icon-s-fold': isCollapse,
-                'el-icon-s-unfold': !isCollapse
-              }"
-              @click="isCollapse = !isCollapse"
-            ></i>
-            <span>江苏传智播客科技教育有限公司</span>
-          </div>
-          <el-dropdown>
-            <div class="avatar-wrap">
-              <img class="avatar" :src="user.photo" alt="">
-              <span>{{user.name}}</span>
-              <i class="el-icon-arrow-down el-icon--right"></i>
-            </div>
-            <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>设置</el-dropdown-item>
-              <el-dropdown-item @click.native="onLogout">退出</el-dropdown-item>
-            </el-dropdown-menu>
-          </el-dropdown>
+        <div>
+          <i
+            :class="{
+              'el-icon-s-fold': isCollapse,
+              'el-icon-s-unfold': !isCollapse
+            }"
+            @click="isCollapse = !isCollapse"
+          ></i>
+
+          <span>xxx有限公司</span>
         </div>
+        <el-dropdown>
+          <div class="avatar-wrap">
+            <img class="avatar" :src="user.photo" alt="">
+            <span>{{user.name}}</span>
+            <i class="el-icon-arrow-down el-icon--right"></i>
+          </div>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item>设置</el-dropdown-item>
+            <el-dropdown-item @click.native="onLogout">退出</el-dropdown-item>
+          </el-dropdown-menu>
+        </el-dropdown>
       </el-header>
       <el-main class="main">
         <!-- 子路由出口 -->
@@ -47,7 +43,6 @@
 <script>
 import AppAside from './components/aside'
 import { getUserProfile } from '@/api/user'
-// import AppHeader from './components/header'
 export default {
   name: 'LayoutIndex',
   components: {
@@ -56,7 +51,7 @@ export default {
   props: {},
   data () {
     return {
-      user: {}, // 当前用户登录信息
+      user: {},
       isCollapse: false
     }
   },
@@ -80,7 +75,6 @@ export default {
       }).then(() => {
         // 把用户的登录状态清除
         window.localStorage.removeItem('user')
-
         // 跳转到登录页面
         this.$router.push('/login')
       }).catch(() => {
@@ -109,14 +103,6 @@ export default {
   }
 }
 .header {
-  background-color: #b3c0d1;
-}
-.main {
-  background-color: #e9eef3;
-}
-.header-container {
-  width: 100%;
-  height: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -131,5 +117,8 @@ export default {
       margin-right: 10px;
     }
   }
+}
+.main {
+  background-color: #e9eef3;
 }
 </style>
